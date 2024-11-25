@@ -7,6 +7,7 @@ import { removeUser } from "../store/userSlice";
 
 const NavBar = () => {
   const user = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ const NavBar = () => {
       </div>
       {user && (
         <div className="flex-none gap-2">
-          <div className="form-control">Welcome, {user?.data?.firstName}</div>
+          <div className="form-control">Welcome, {user?.firstName}</div>
 
           <div className="dropdown dropdown-end mx-5 flex">
             <div
