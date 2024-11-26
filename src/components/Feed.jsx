@@ -10,11 +10,12 @@ const Feed = () => {
   const feed = useSelector((store) => store.feed);
 
   const getFeed = async () => {
-    if (feed) return;
+    
     try {
       const res = await axios.get(BASE_URL + "/user/feed", {
         withCredentials: true,
       });
+      console.log("API Response:", res.data);
       dispatch(addFeed(res.data.data));
     } catch (err) {
       console.log(err);
@@ -22,10 +23,17 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    console.log("Triggered");
     getFeed();
+    console.log("end");
   }, []);
 
-  if (feed.length <= 0) return <h1 className="flex justify-center my-10 font-bold text-2xl text-white">No New Users Found</h1>;
+  if (feed.length <= 0)
+    return (
+      <h1 className="flex justify-center my-10 font-bold text-2xl text-white">
+        No New Users Found
+      </h1>
+    );
   return (
     feed && (
       <div className="flex justify-center my-10">
