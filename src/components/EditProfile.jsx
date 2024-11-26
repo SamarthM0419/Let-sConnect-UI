@@ -30,7 +30,7 @@ const EditProfile = ({ user }) => {
           },
         }
       );
-      console.log(res?.data);
+      console.log(res);
       dispatch(addUser(res?.data?.data));
       setShowToast(true);
       setTimeout(() => {
