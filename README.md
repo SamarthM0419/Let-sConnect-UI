@@ -26,3 +26,15 @@
    - Clone the repositories
 
    -npm run build - create a dist folder
+
+   # Front - end
+   - Installed dependencies in aws server
+   - npm run build
+   - sudo apt update - update the application
+   - sudo apt install nginx - install the nginx package
+   - sudo systemctl start nginx - starting the nginx
+   - sudo systemctl enable nginx - enable nginx
+   - Copy code from dist(build files) to nginx http server. (/var/www/html)
+   - sudo scp -r dist/* /var/www/html/
+
+   - Enable port :80 to make this work
