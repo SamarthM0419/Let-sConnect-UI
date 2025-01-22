@@ -18,9 +18,11 @@
    # Deployment
 
    - Sign up on AWS
-   - Launch instance
+   - Launch instance - select an instance type - t2.micro
    - chmod 400 <secret>.pem
    - connect to machine using ssh.
      (ssh -i "Let'sConnect-secret.pem" ubuntu@ec2-16-171-182-161.     e eu-north-1.compute.amazonaws.com)
    - Install the same node version as the project
-   -
+   - Clone the repositories
+
+   -npm run build - create a dist folder
