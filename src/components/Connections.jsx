@@ -3,10 +3,12 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../store/connectionSlice";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connections);
+  console.log(connections);
 
   const fetchConnections = async () => {
     try {
@@ -28,7 +30,11 @@ const Connections = () => {
   }
 
   if (connections.length === 0) {
-    return <h1 className="font-bold text-2xl">No Connections Found</h1>;
+    return (
+      <h1 className="font-bold text-2xl text-center pt-5">
+        No Connections Found
+      </h1>
+    );
   }
 
   return (
@@ -36,11 +42,11 @@ const Connections = () => {
       <h1 className="font-bold text-3xl text-white">Connections</h1>
 
       {connections.map((connection) => {
-        const { firstName, lastName, age, gender, about, photoUrl, skills } =
+        const { firstName, lastName, age, gender, about, photoUrl, skills ,_id } =
           connection;
         return (
           <div
-            key={connection._id}
+            key={_id}
             className=" flex m-4 p-4  bg-base-300 w-1/2 mx-auto"
           >
             <div>
@@ -59,6 +65,9 @@ const Connections = () => {
                 <p>{age + " ," + gender + ", " + skills}</p>
               )}
             </div>
+            <Link to={"/chat/ " + _id}>
+              <div className="ml-60 mt-5 btn btn-primary ">Chat</div>
+            </Link>
           </div>
         );
       })}
