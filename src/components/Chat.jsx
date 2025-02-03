@@ -8,14 +8,16 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const loggedInUser = useSelector((state) => state.user);
   const userId = loggedInUser?._id;
+  const firstName = loggedInUser?.firstName;
+
   const [newMessage, setNewMessage] = useState("");
- 
+
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !targetUserId) return;
     const socket = createSocketConnection();
 
     socket.emit("joinChat", {
-      firstName: loggedInUser.firstName,
+      firstName,
       userId,
       targetUserId,
     });
@@ -29,7 +31,6 @@ const Chat = () => {
   }, [userId, targetUserId]);
 
   const sendMessage = () => {
-    console.log("Button clicked");
     const socket = createSocketConnection();
     socket.emit("sendMessage", {
       firstName: loggedInUser.firstName,
@@ -37,6 +38,7 @@ const Chat = () => {
       targetUserId,
       text: newMessage,
     });
+    setNewMessage("");
   };
 
   return (
@@ -45,9 +47,9 @@ const Chat = () => {
         Chat
       </h1>
       <div className="flex-1 overflow-scroll p-5">
-        {messages.map((index, msg) => {
+        {messages.map((msg,index) => {
           return (
-            <div className="chat chat-start">
+            <div className="chat chat-start" key={index}>
               <div className="chat-header">{msg.firstName}</div>
               <div className="chat-bubble">{msg.text}</div>
               <div className="chat-footer opacity-50">Seen</div>
