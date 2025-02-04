@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -9,8 +11,31 @@ const Chat = () => {
   const loggedInUser = useSelector((state) => state.user);
   const userId = loggedInUser?._id;
   const firstName = loggedInUser?.firstName;
+  const trimmedTargetUserId = targetUserId.trim();
 
   const [newMessage, setNewMessage] = useState("");
+
+  const fetchChat = async () => {
+    const chat = await axios.get(BASE_URL + "/chat/" + trimmedTargetUserId, {
+      withCredentials: true,
+    });
+
+    console.log(chat?.data?.messages);
+
+    const chatMessages = chat?.data?.messages.map((msg) => {
+      const { senderId, text } = msg;
+      return {
+        firstName: senderId?.firstName,
+        lastName: senderId?.lastName,
+        text: text,
+      };
+    });
+    setMessages(chatMessages);
+  };
+
+  useEffect(() => {
+    fetchChat();
+  }, []);
 
   useEffect(() => {
     if (!userId || !targetUserId) return;
@@ -22,9 +47,9 @@ const Chat = () => {
       targetUserId,
     });
 
-    socket.on("messageReceived", ({ firstName, text }) => {
+    socket.on("messageReceived", ({ firstName, lastName, text }) => {
       console.log(firstName + " : " + text);
-      setMessages((messages) => [...messages, { firstName, text }]);
+      setMessages((messages) => [...messages, { firstName, text, lastName }]);
     });
 
     return () => socket.disconnect();
@@ -33,7 +58,8 @@ const Chat = () => {
   const sendMessage = () => {
     const socket = createSocketConnection();
     socket.emit("sendMessage", {
-      firstName: loggedInUser.firstName,
+      firstName: loggedInUser?.firstName,
+      lastName: loggedInUser?.lastName,
       userId,
       targetUserId,
       text: newMessage,
@@ -47,11 +73,22 @@ const Chat = () => {
         Chat
       </h1>
       <div className="flex-1 overflow-scroll p-5">
-        {messages.map((msg,index) => {
+        {messages.map((msg, index) => {
+          console.log(msg);
           return (
-            <div className="chat chat-start" key={index}>
-              <div className="chat-header">{msg.firstName}</div>
-              <div className="chat-bubble">{msg.text}</div>
+            <div
+              key={index}
+              className={
+                "chat " +
+                (loggedInUser?.firstName === msg.firstName
+                  ? " chat-end "
+                  : " chat-start ")
+              }
+            >
+              <div className="chat-header">
+                {`${msg.firstName}  ${msg.lastName}`}
+              </div>
+              <div className="chat-bubble chat-bubble-primary">{msg.text}</div>
               <div className="chat-footer opacity-50">Seen</div>
             </div>
           );
